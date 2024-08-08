@@ -1,1 +1,4 @@
 Django~=5.0.8
+crispy~=0.7.4
+crispy-bootstrap5~=2024.2
+django-crispy-forms~=2.3

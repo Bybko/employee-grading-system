@@ -14,19 +14,31 @@
             <div>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/home">Home</a>
+                        <a class="nav-link" href="/home">Главная</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/create-post">Post</a>
+                        <a class="nav-link" href="/create-post">Документы</a>
                     </li>
+                    {%  if user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">Панель администратора</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
 
             <div>
                 <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <span class="navbar-text">Вы вошли как {{user.username}} | </span>
                     <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
+                        <a class="nav-link" href="/logout">Выйти</a>
                     </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Войти</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

@@ -1,9 +1,15 @@
 from django.shortcuts import render
 from . import forms
+from django.contrib.auth.models import User
 
 
 def home_page(request):
-    return render(request, 'main/home.html')
+    users = User.objects.all()
+    context = {
+        'users': users
+    }
+
+    return render(request, 'main/home.html', context)
 
 
 def sign_up_page(request):

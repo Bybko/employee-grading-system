@@ -1,5 +1,11 @@
 {% extends 'main/base.html' %}
 {% block title %}Home Page{% endblock %}
 {% block content %}
-<h1>Home Page!</h1>
+<h1>All current users: </h1>
+
+{% for user in users %}
+<div class="users_info">
+    <h3>{{ user.username }}</h3>
+</div>
+{% endfor %}
 {% endblock %}

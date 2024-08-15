@@ -8,13 +8,16 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     ratings = models.IntegerField(default=0)
 
+    def __str__(self):
+        return f'{self.user.get_full_name()}, Баллы: {self.ratings}'
 
-# @receiver(post_save, sender=User)
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Profile.objects.create(user=instance)
-#
-#
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
 # @receiver(post_save, sender=User)
 # def save_user_profile(sender, instance, **kwargs):
 #     instance.profile.save()
@@ -38,14 +41,14 @@ class Criteria(models.Model):
 
 class Grading(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    used_standard = models.ForeignKey(Criteria, on_delete=models.CASCADE)
+    used_standard = models.ForeignKey(Criteria, on_delete=models.PROTECT)
     work_done = models.CharField(max_length=400,blank=True)
     rating = models.IntegerField(default=0)
 
-    # class Meta:
-    #     constraints = [
-    #         models.UniqueConstraint(fields=['user', 'used_standard'], name='unique_user_data')
-    #     ]
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'used_standard'], name='unique_user_data')
+        ]
 
     def __str__(self):
         return f'{self.user} - {self.used_standard} - {self.rating}'

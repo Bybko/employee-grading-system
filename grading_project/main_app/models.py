@@ -38,8 +38,8 @@ class Criteria(models.Model):
 
 class Grading(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    used_standard = models.ForeignKey(Criteria, on_delete=models.CASCADE)
-    work_done = models.CharField(max_length=400,blank=True)
+    used_standard = models.ForeignKey(Criteria, on_delete=models.PROTECT)
+    work_done = models.CharField(max_length=400, blank=True)
     rating = models.IntegerField(default=0)
 
     # class Meta:

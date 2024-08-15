@@ -3,9 +3,18 @@
 {% block content %}
 <h1>All current users: </h1>
 
-{% for user in users %}
+{% for info in info_list %}
 <div class="users_info">
-    <h3>{{ user.username }}</h3>
+    {% if info.user_gradings|length > 0 %}
+    <h3>{{ info.user.first_name }}  {{ info.user.last_name }}</h3>
+    {% for grading in info.user_gradings %}
+    <h3>{{ grading.work_done }}  {{ grading.used_standard }} {{ grading.rating }}</h3>
+    {% endfor %}
+    <br>
+    {% else %}
+    <h3>{{ info.user.first_name }}  {{ info.user.last_name }} никакой работы не выполнял</h3>
+    <br>
+    {% endif %}
 </div>
 {% endfor %}
 {% endblock %}

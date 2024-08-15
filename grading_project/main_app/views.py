@@ -1,12 +1,20 @@
 from django.shortcuts import render
-from . import forms
+from . import forms, models, info_table
 from django.contrib.auth.models import User
 
 
 def home_page(request):
     users = User.objects.all()
+    gradings = models.Grading.objects.all()
+
+    info_list = []
+    for user in users:
+        info = info_table.InfoTable(user)
+        info.find_user_grading(gradings)
+        info_list.append(info)
+
     context = {
-        'users': users
+        'info_list': info_list
     }
 
     return render(request, 'main/home.html', context)

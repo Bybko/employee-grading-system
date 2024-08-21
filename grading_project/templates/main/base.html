@@ -31,7 +31,8 @@
             <div>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                    <span class="navbar-text">Вы вошли как {{user.username}} | </span>
+                    <span class="navbar-text">Здравствуйте, {{ user.first_name }}
+                        {{ user.last_name }} | </span>
                     <form action="{% url 'logout' %}" method="post">
                         {% csrf_token %} {{form|crispy}}
                         <button type="submit" class="btn btn-danger">Выйти</button>

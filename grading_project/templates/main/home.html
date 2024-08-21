@@ -1,20 +1,50 @@
 {% extends 'main/base.html' %}
 {% block title %}Home Page{% endblock %}
 {% block content %}
-<h1>All current users: </h1>
 
-{% for info in info_list %}
 <div class="users_info">
-    {% if info.user_gradings|length > 0 %}
-    <h3>{{ info.user.first_name }}  {{ info.user.last_name }}</h3>
-    {% for grading in info.user_gradings %}
-    <h3>{{ grading.work_done }}  {{ grading.used_standard }} {{ grading.rating }}</h3>
-    {% endfor %}
+    {% if info.user_tables|length > 0 %}
     <br>
+    <h1>Вам необходимо заполнить:</h1>
+    <br>
+
+    <style>
+    table {
+        border-collapse: collapse; /* Чтобы линии были видны */
+        width: 100%;
+    }
+
+    th, td {
+        padding: 10px; /* cell spacing */
+        text-align: left;
+        border: 3px solid black; /* border between columns */
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+    </style>
+
+    <table border="3">
+        <tr>
+            <th>Наименование</th>
+            <th>Норматив</th>
+            <th>Выполненная работа</th>
+            <th>Баллы</th>
+        </tr>
+        {% for table in info.user_tables %}
+        <tr>
+            <th>{{ table.grading.used_standard }}</th>
+            <th>{{ table.criteria.standard_in_points }}</th>
+            <th></th>
+            <th></th>
+        </tr>
+        {% endfor %}
+    </table>
     {% else %}
-    <h3>{{ info.user.first_name }}  {{ info.user.last_name }} никакой работы не выполнял</h3>
+    <br>
+    <h1>На данный момент заполнять ничего не требуется.</h1>
     <br>
     {% endif %}
 </div>
-{% endfor %}
 {% endblock %}

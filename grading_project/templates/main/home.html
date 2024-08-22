@@ -25,22 +25,31 @@
     }
     </style>
 
-    <table border="3">
-        <tr>
-            <th>Наименование</th>
-            <th>Норматив</th>
-            <th>Выполненная работа</th>
-            <th>Баллы</th>
-        </tr>
-        {% for table in info.user_tables %}
-        <tr>
-            <th>{{ table.grading.used_standard }}</th>
-            <th>{{ table.criteria.standard_in_points }}</th>
-            <th></th>
-            <th></th>
-        </tr>
-        {% endfor %}
-    </table>
+    <form method="POST" action="{% url 'save-form' %}">
+         {% csrf_token %}
+        <table border="3">
+            <tr>
+                <th>Наименование</th>
+                <th>Норматив</th>
+                <th>Выполненная работа</th>
+                <th>Баллы</th>
+            </tr>
+            {% for table in info.user_tables %}
+            <tr>
+                <th>{{ table.grading.used_standard }}</th>
+                <th>{{ table.criteria.standard_in_points }}</th>
+                <th><input type="text"
+                           name="work_done_{{ table.grading.user.username }}_{{ table.grading.used_standard }}"
+                           placeholder="{{ table.grading.work_done }}"></th>
+                <th><input type="number"
+                           name="points_{{ table.grading.user.username }}_{{ table.grading.used_standard }}"
+                           placeholder="{{ table.grading.rating }}"></th>
+            </tr>
+            {% endfor %}
+        </table>
+        <button type="submit">Сохранить</button>
+    </form>
+
     {% else %}
     <br>
     <h1>На данный момент заполнять ничего не требуется.</h1>

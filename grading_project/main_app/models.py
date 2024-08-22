@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 
@@ -64,6 +64,25 @@ class Grading(models.Model):
         verbose_name = 'Выполненные работы'
         verbose_name_plural = 'Выполненные работы'
 
-    # def __str__(self):
-    #     return f'{self.user} - {self.used_standard} - {self.rating}'
+    def __str__(self):
+        return f'{self.user} - {self.used_standard} - {self.rating}'
 
+# Сигнал для обновления баллов в Profile после сохранения Grading
+
+
+@receiver(post_save, sender=Grading)
+def update_user_profile_on_save(sender, instance, **kwargs):
+    user_profile = instance.user.profile
+    total_points = Grading.objects.filter(user=instance.user).aggregate(total=models.Sum('rating'))['total']
+    user_profile.ratings = total_points or 0
+    user_profile.save()
+
+# Сигнал для обновления баллов в Profile после удаления Grading
+
+
+@receiver(post_delete, sender=Grading)
+def update_user_profile_on_delete(sender, instance, **kwargs):
+    user_profile = instance.user.profile
+    total_points = Grading.objects.filter(user=instance.user).aggregate(total=models.Sum('rating'))['total']
+    user_profile.ratings = total_points or 0
+    user_profile.save()

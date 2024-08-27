@@ -4,18 +4,23 @@ from django.contrib.auth.models import User
 
 
 def home_page(request):
-    user = request.user
-    gradings = models.Grading.objects.all()
-    criterias = models.Criteria.objects.all()
+    if request.user.is_authenticated:
+        user_object = request.user
+        gradings = models.Grading.objects.all()
+        criterias = models.Criteria.objects.all()
+        role = models.Profile.objects.get(user=user_object)
 
-    info = info_table.InfoTable(user)
-    info.find_user_grading(gradings, criterias)
+        info = info_table.InfoTable(user_object)
+        info.set_role(role)
+        info.find_user_grading(gradings, criterias)
 
-    context = {
-        'info': info
-    }
+        context = {
+            'info': info
+        }
 
-    return render(request, 'main/home.html', context)
+        return render(request, 'main/home.html', context)
+    else:
+        return redirect('login')
 
 
 def sign_up_page(request):
@@ -30,15 +35,15 @@ def sign_up_page(request):
 def save_form_function(request):
     if request.method == 'POST':
         for key, value in request.POST.items():
-            if key.startswith('work_done_') and value is not '':
-                test_user = User.objects.get(username=key.split('_')[2])
-                test_work_title = models.Criteria.objects.get(title=key.split('_')[3])
+            if key.startswith('work_done') and value != '':
+                test_user = User.objects.get(username=key.split('-!SePaRaToR!-')[1])
+                test_work_title = models.Criteria.objects.get(title=key.split('-!SePaRaToR!-')[2])
                 grading = models.Grading.objects.get(user=test_user, used_standard=test_work_title)
                 grading.work_done = value
                 grading.save()
-            if key.startswith('points_') and value is not '':
-                test_user = User.objects.get(username=key.split('_')[1])
-                test_work_title = models.Criteria.objects.get(title=key.split('_')[2])
+            if key.startswith('points') and value != '':
+                test_user = User.objects.get(username=key.split('-!SePaRaToR!-')[1])
+                test_work_title = models.Criteria.objects.get(title=key.split('-!SePaRaToR!-')[2])
                 grading = models.Grading.objects.get(user=test_user, used_standard=test_work_title)
                 grading.rating = value
                 grading.save()

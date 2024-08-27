@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Отчет</title>
+</head>
+<body>
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+  <h1>Отчет по работам пользователя: {{ profile.user.get_full_name }}</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Наименование работ</th>
+        <th>Норматив в баллах</th>
+        <th>Выполненная работа</th>
+        <th>Баллы</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for grading in grading_records %}
+        <tr>
+          <td>{{ grading.used_standard.title }}</td>
+          <td>{{ grading.used_standard.standard_in_points }}</td>
+          <td>{{ grading.work_done }}</td>
+          <td>{{ grading.rating }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+</body>
+</html>

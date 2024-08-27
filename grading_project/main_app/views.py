@@ -12,7 +12,12 @@ def home_page(request):
 
         info = info_table.InfoTable(user_object)
         info.set_role(role)
-        info.find_user_grading(gradings, criterias)
+
+        if info.user_role == 'Работник':
+            info.find_user_grading(gradings, criterias)
+        elif info.user_role == 'Проверяющий':
+            users = User.objects.all()
+            info.find_controlled_users(users)
 
         context = {
             'info': info

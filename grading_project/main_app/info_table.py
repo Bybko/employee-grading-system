@@ -13,6 +13,7 @@ class InfoTable:
         self.user = user
         self.user_role = 'None'
         self.user_tables = []
+        self.controlled_users = []
 
     def find_user_grading(self, gradings: list[models.Grading], criterias: list[models.Criteria]) -> None:
         # read how get object by foreign key later
@@ -23,5 +24,19 @@ class InfoTable:
                         new_table = Table(grading, criteria)
                         self.user_tables.append(new_table)
 
-    def set_role(self, profile: models.Profile):
+    def set_role(self, profile: models.Profile) -> None:
         self.user_role = profile.position.position_name
+
+    def find_controlled_users(self, users: list[User]) -> None:
+        for user_object in users:
+            role = models.Profile.objects.get(user=user_object)
+
+            if role.position.position_name == 'Работник':
+                info = InfoTable(user_object)
+                info.set_role(role)
+
+                gradings = models.Grading.objects.all()
+                criterias = models.Criteria.objects.all()
+                info.find_user_grading(gradings, criterias)
+
+                self.controlled_users.append(info)

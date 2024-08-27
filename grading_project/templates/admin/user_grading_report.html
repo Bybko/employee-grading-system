@@ -8,7 +8,7 @@
 {% extends "admin/base_site.html" %}
 
 {% block content %}
-  <h1>Отчет по работам пользователя: {{ profile.user.get_full_name }}</h1>
+  <h1>Отчет по работам пользователя: {{ profile.user.get_full_name|default:profile.user.username }}</h1>
   <table>
     <thead>
       <tr>

@@ -1,0 +1,72 @@
+<div class="style">
+    <style>
+    table {
+        border-collapse: collapse; /* to make lines visible */
+        width: 100%;
+    }
+
+    th, td {
+        padding: 10px; /* cell spacing */
+        text-align: left;
+        border: 3px solid black; /* border between columns */
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+    </style>
+</div>
+
+<form method="POST" action="{% url 'save-form' %}">
+    {% csrf_token %}
+    {% if info.user_role == 'Работник' %} <!-- refactor this if statment later -->
+        <table border="3">
+            <tr>
+                <th>Наименование</th>
+                <th>Норматив</th>
+                <th>Выполненная работа</th>
+                <th>Баллы</th>
+            </tr>
+
+            {% for table in info.user_tables %}
+            <tr>
+                <th>{{ table.grading.used_standard }}</th>
+                <th>{{ table.criteria.standard_in_points }}</th>
+                <th><input type="text"
+                        name="work_done-!SePaRaToR!-{{ table.grading.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
+                        placeholder="{{ table.grading.work_done }}"></th>
+                <th>{{ table.grading.rating }}</th>
+            </tr>
+            {% endfor %}
+        </table>
+    {% elif info.user_role == 'Проверяющий' %}
+        <table border="3">
+            <tr>
+                <th>Наименование</th>
+                <th>Норматив</th>
+                <th>Выполненная работа</th>
+                <th>Баллы</th>
+                <th>Ответственный за ввод данных</th>
+            </tr>
+
+        {% for user in info.controlled_users %}
+            {% for table in user.user_tables %}
+            <tr>
+                <th>{{ table.grading.used_standard }}</th>
+                <th>{{ table.criteria.standard_in_points }}</th>
+                <th><input type="text"
+                           name="work_done-!SePaRaToR!-{{ table.grading.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
+                           placeholder="{{ table.grading.work_done }}"></th>
+                <th><input type="number"
+                           name="points-!SePaRaToR!-{{ table.grading.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
+                           placeholder="{{ table.grading.rating }}"></th>
+                <th>{{ user.user.first_name }}  {{ user.user.last_name }}</th>
+            </tr>
+            {% endfor %}
+        {% endfor %}
+        </table>
+    {% else %}
+        <h1>Ошибка. У вас не настроена роль. Обратитесь к администратору.</h1>
+    {% endif %}
+    <button type="submit">Сохранить</button>
+</form>

@@ -3,70 +3,23 @@
 {% block content %}
 
 <div class="users_info">
-    {% if info.user_tables|length > 0 %}
+    {% if info.user_role == 'Работник' and info.user_tables|length > 0 %}
     <br>
     <h1>Вам необходимо заполнить:</h1>
     <br>
 
-    <style>
-    table {
-        border-collapse: collapse; /* to make lines visible */
-        width: 100%;
-    }
+    {% include 'main/output.html' %}
 
-    th, td {
-        padding: 10px; /* cell spacing */
-        text-align: left;
-        border: 3px solid black; /* border between columns */
-    }
+    {% elif info.user_role == 'Проверяющий' %}
+    <br>
+    <h1>Вам необходимо проверить:</h1>
+    <br>
 
-    th {
-        background-color: #f2f2f2;
-    }
-    </style>
-
-    <form method="POST" action="{% url 'save-form' %}">
-        {% csrf_token %}
-        <table border="3">
-            <tr>
-                <th>Наименование</th>
-                <th>Норматив</th>
-                <th>Выполненная работа</th>
-                <th>Баллы</th>
-            </tr>
-            {% if info.user_role == 'Работник' %} <!-- refactor this if statment later -->
-                {% for table in info.user_tables %}
-                <tr>
-                    <th>{{ table.grading.used_standard }}</th>
-                    <th>{{ table.criteria.standard_in_points }}</th>
-                    <th><input type="text"
-                            name="work_done-!SePaRaToR!-{{ table.grading.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
-                            placeholder="{{ table.grading.work_done }}"></th>
-                    <th>{{ table.grading.rating }}</th>
-                </tr>
-                {% endfor %}
-            {% elif info.user_role == 'Проверяющий' %}
-                {% for table in info.user_tables %}
-                <tr>
-                    <th>{{ table.grading.used_standard }}</th>
-                    <th>{{ table.criteria.standard_in_points }}</th>
-                    <th>{{ table.grading.work_done }}</th>
-                        <th><input type="number"
-                                name="points-!SePaRaToR!-{{ table.grading.user.username }}-!SePaRaToR!-
-                                {{ table.grading.used_standard }}"
-                                placeholder="{{ table.grading.rating }}"></th>
-                </tr>
-                {% endfor %}
-            {% else %}
-                <h1>Ошибка. У вас не настроена роль. Обратитесь к администратору.</h1>
-            {% endif %}
-        </table>
-        <button type="submit">Сохранить</button>
-    </form>
+    {% include 'main/output.html' %}
 
     {% else %}
     <br>
-    <h1>На данный момент заполнять ничего не требуется.</h1>
+    <h1>На данный момент записей для Вас нет.</h1>
     <br>
     {% endif %}
 </div>

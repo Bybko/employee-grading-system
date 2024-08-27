@@ -11,6 +11,7 @@ class Table:
 class InfoTable:
     def __init__(self, user: User):
         self.user = user
+        self.user_role = 'None'
         self.user_tables = []
 
     def find_user_grading(self, gradings: list[models.Grading], criterias: list[models.Criteria]) -> None:
@@ -21,3 +22,6 @@ class InfoTable:
                     if str(criteria.title) == str(grading.used_standard):
                         new_table = Table(grading, criteria)
                         self.user_tables.append(new_table)
+
+    def set_role(self, profile: models.Profile):
+        self.user_role = profile.position.position_name

@@ -2,8 +2,19 @@ from django.contrib import admin
 from django.urls import path
 from django.shortcuts import render
 from django.utils.html import format_html
+from django import forms
 from django.urls import reverse
 from main_app.models import *
+
+from django.contrib.auth.models import User
+
+
+def user_str(self):
+    full_name = self.get_full_name()
+    return full_name if full_name else self.username
+
+
+User.add_to_class("__str__", user_str)
 
 
 class ProfileAdmin(admin.ModelAdmin):
@@ -11,7 +22,8 @@ class ProfileAdmin(admin.ModelAdmin):
     search_fields = ['user__first_name', 'user__last_name', 'position__position_name', 'ratings']
 
     def full_name(self, obj):
-        return obj.user.get_full_name()
+        full_name = obj.user.get_full_name()
+        return full_name if full_name else obj.user.username
     full_name.short_description = 'Юзер'
 
     def get_report_button(self, obj):
@@ -45,7 +57,26 @@ class CriteriaAdmin(admin.ModelAdmin):
     table_name.short_description = 'Название таблицы'
 
 
+# class GradingAdminForm(forms.ModelForm):
+#     user = forms.ModelChoiceField(
+#         queryset=User.objects.all(),
+#         label='Юзер',
+#         widget=forms.Select,
+#         to_field_name='id',
+#         empty_label=None,
+#     )
+#
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.fields['user'].label_from_instance = lambda obj: f"{obj.get_full_name()}"
+#
+#     class Meta:
+#         model = Grading
+#         fields = '__all__'
+
+
 class GradingAdmin(admin.ModelAdmin):
+    #form = GradingAdminForm
     list_display = ['full_name', 'criteria_title', 'work_done', 'rating']
     search_fields = ['user__first_name', 'user__last_name', 'used_standard__title', 'work_done', 'rating']
 

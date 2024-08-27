@@ -4,8 +4,20 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 
+class Positions(models.Model):
+    position_name = models.CharField(verbose_name='Должность', max_length=50, blank=False)
+
+    class Meta:
+        verbose_name = 'Должности'
+        verbose_name_plural = 'Должности'
+
+    def __str__(self):
+        return self.position_name
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, verbose_name='Юзер', on_delete=models.CASCADE)
+    position = models.ForeignKey(Positions, verbose_name='Должность', on_delete=models.PROTECT, null=True, blank=True)
     ratings = models.PositiveIntegerField(verbose_name='Рейтинг', default=0)
 
     class Meta:
@@ -41,7 +53,7 @@ class Table(models.Model):
 class Criteria(models.Model):
     title = models.CharField(verbose_name='Наименование работ', max_length=200, blank=False)
     standard_in_points = models.CharField(verbose_name='Норматив в баллах', max_length=30, blank=False)
-    table_title = models.ForeignKey(Table, verbose_name='Таблица', on_delete=models.PROTECT)
+    table_title = models.ForeignKey(Table, verbose_name='Таблица', on_delete=models.PROTECT, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Работы и нормативы'

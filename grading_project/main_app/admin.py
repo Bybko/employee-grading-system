@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from main_app.models import Profile, Criteria, Grading, Table
+from main_app.models import *
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['full_name', 'ratings']
-    search_fields = ['user__first_name', 'user__last_name', 'ratings']
+    list_display = ['full_name', 'position', 'ratings']
+    search_fields = ['user__first_name', 'user__last_name', 'position__position_name', 'ratings']
 
     def full_name(self, obj):
         return obj.user.get_full_name()
@@ -43,7 +43,13 @@ class TableAdmin(admin.ModelAdmin):
     search_fields = ['table']
 
 
+class PositionsAdmin(admin.ModelAdmin):
+    list_display = ['position_name']
+    search_fields = ['position_name']
+
+
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Criteria, CriteriaAdmin)
 admin.site.register(Grading, GradingAdmin)
 admin.site.register(Table, TableAdmin)
+admin.site.register(Positions, PositionsAdmin)

@@ -25,13 +25,13 @@ class InfoTable:
                         self.user_tables.append(new_table)
 
     def set_role(self, profile: models.Profile) -> None:
-        self.user_role = profile.position.position_name
+        self.user_role = profile.teaching_cathedras.cathedra
 
     def find_controlled_users(self, users: list[User]) -> None:
         for user_object in users:
             role = models.Profile.objects.get(user=user_object)
 
-            if role.position.position_name == 'Работник':
+            if role.teaching_cathedras.cathedra == 'Работник':
                 info = InfoTable(user_object)
                 info.set_role(role)
 

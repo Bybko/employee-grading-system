@@ -2,10 +2,8 @@ from django.contrib import admin
 from django.urls import path
 from django.shortcuts import render
 from django.utils.html import format_html
-from django import forms
 from django.urls import reverse
 from main_app.models import *
-
 from django.contrib.auth.models import User
 
 
@@ -18,13 +16,18 @@ User.add_to_class("__str__", user_str)
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['full_name', 'position', 'ratings', 'get_report_button']
-    search_fields = ['user__first_name', 'user__last_name', 'position__position_name', 'ratings']
+    list_display = ['full_name', 'get_cathedras', 'ratings', 'get_report_button']
+    search_fields = ['user__first_name', 'user__last_name', 'teaching_cathedras__cathedra', 'ratings']
+    list_filter = ['teaching_cathedras']
 
     def full_name(self, obj):
         full_name = obj.user.get_full_name()
         return full_name if full_name else obj.user.username
     full_name.short_description = 'Юзер'
+
+    def get_cathedras(self, obj):
+        return ", ".join([p.cathedra for p in obj.teaching_cathedras.all()])
+    get_cathedras.short_description = 'Кафедры'
 
     def get_report_button(self, obj):
         return format_html('<a class="button" href="{}">Сформировать отчет</a>', reverse('admin:user_grading_report', args=[obj.pk]))
@@ -57,28 +60,10 @@ class CriteriaAdmin(admin.ModelAdmin):
     table_name.short_description = 'Название таблицы'
 
 
-# class GradingAdminForm(forms.ModelForm):
-#     user = forms.ModelChoiceField(
-#         queryset=User.objects.all(),
-#         label='Юзер',
-#         widget=forms.Select,
-#         to_field_name='id',
-#         empty_label=None,
-#     )
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.fields['user'].label_from_instance = lambda obj: f"{obj.get_full_name()}"
-#
-#     class Meta:
-#         model = Grading
-#         fields = '__all__'
-
-
 class GradingAdmin(admin.ModelAdmin):
-    #form = GradingAdminForm
-    list_display = ['full_name', 'criteria_title', 'work_done', 'rating']
+    list_display = ['full_name', 'criteria_title', 'work_done', 'rating', 'status']
     search_fields = ['user__first_name', 'user__last_name', 'used_standard__title', 'work_done', 'rating']
+    list_filter = ['status']
 
     def criteria_title(self, obj):
         return obj.used_standard.title
@@ -96,13 +81,28 @@ class TableAdmin(admin.ModelAdmin):
     search_fields = ['table']
 
 
-class PositionsAdmin(admin.ModelAdmin):
-    list_display = ['position_name']
-    search_fields = ['position_name']
+class FacultiesAdmin(admin.ModelAdmin):
+    list_display = ['faculty']
+    search_fields = ['faculty']
+
+
+class CathedrasAdmin(admin.ModelAdmin):
+    list_display = ['cathedra', 'owning_faculty']
+    search_fields = ['cathedra', 'owning_faculty__faculty']
+    list_filter = ['owning_faculty']
+
+
+class InspectorsAdmin(admin.ModelAdmin):
+    list_display = ['user', 'audited_faculty']
+    search_fields = ['user__first_name', 'user__last_name', 'audited_faculty__faculty']
+    list_filter = ['audited_faculty']
 
 
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Criteria, CriteriaAdmin)
 admin.site.register(Grading, GradingAdmin)
 admin.site.register(Table, TableAdmin)
-admin.site.register(Positions, PositionsAdmin)
+admin.site.register(Faculties, FacultiesAdmin)
+admin.site.register(Cathedras, CathedrasAdmin)
+admin.site.register(Inspectors, InspectorsAdmin)
+

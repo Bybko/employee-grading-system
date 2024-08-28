@@ -4,28 +4,52 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 
-class Positions(models.Model):
-    position_name = models.CharField(verbose_name='Должность', max_length=50, blank=False)
+class Faculties(models.Model):
+    faculty = models.CharField(verbose_name='Факультет', max_length=50, blank=False)
 
     class Meta:
-        verbose_name = 'Должности'
-        verbose_name_plural = 'Должности'
+        verbose_name = 'Факультеты'
+        verbose_name_plural = 'Факультеты'
 
     def __str__(self):
-        return self.position_name
+        return self.faculty
+
+
+class Cathedras(models.Model):
+    cathedra = models.CharField(verbose_name='Кафедра', max_length=50, blank=False)
+    owning_faculty = models.ForeignKey(Faculties, verbose_name='Факультет', on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = 'Кафедры'
+        verbose_name_plural = 'Кафедры'
+
+    def __str__(self):
+        return self.cathedra
+
+
+class Inspectors(models.Model):
+    user = models.OneToOneField(User, verbose_name='Юзер', on_delete=models.CASCADE)
+    audited_faculty = models.ForeignKey(Faculties, verbose_name='Факультет', on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = 'Проверяющие'
+        verbose_name_plural = 'Проверяющие'
+
+    def __str__(self):
+        return self.user.get_full_name()
 
 
 class Profile(models.Model):
     user = models.OneToOneField(User, verbose_name='Юзер', on_delete=models.CASCADE)
-    position = models.ForeignKey(Positions, verbose_name='Должность', on_delete=models.PROTECT, null=True, blank=True)
+    teaching_cathedras = models.ManyToManyField(Cathedras, verbose_name='Кафедры', blank=True)
     ratings = models.PositiveIntegerField(verbose_name='Рейтинг', default=0)
 
     class Meta:
-        verbose_name = 'Рейтинг работников'
-        verbose_name_plural = 'Рейтинг работников'
+        verbose_name = 'Работники'
+        verbose_name_plural = 'Работники'
 
     def __str__(self):
-        return f'{self.user.get_full_name()}, Баллы: {self.ratings}'
+        return self.user.get_full_name()
 
 
 @receiver(post_save, sender=User)
@@ -64,10 +88,21 @@ class Criteria(models.Model):
 
 
 class Grading(models.Model):
+    STATUS_CHOICES = [
+        ('not_checked', 'Не проверено'),
+        ('approved', 'Одобрено'),
+        ('has_errors', 'Есть ошибки'),
+    ]
     user = models.ForeignKey(User, verbose_name='Юзер', on_delete=models.CASCADE)
     used_standard = models.ForeignKey(Criteria, verbose_name='Наименование работ', on_delete=models.PROTECT)
     work_done = models.CharField(verbose_name='Выполненная работа', max_length=400, blank=True)
     rating = models.PositiveIntegerField(verbose_name='Баллы', default=0)
+    status = models.CharField(
+        verbose_name='Статус',
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='not_checked',
+    )
 
     class Meta:
         constraints = [

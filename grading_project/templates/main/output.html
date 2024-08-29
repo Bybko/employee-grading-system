@@ -19,7 +19,7 @@
 
 <form method="POST" action="{% url 'save-form' %}">
     {% csrf_token %}
-    {% if info.user_role == 'Работник' %} <!-- refactor this if statment later -->
+    {% if info.user_role == 'Teacher' %}
         <table border="3">
             <tr>
                 <th>Наименование</th>
@@ -39,7 +39,7 @@
             </tr>
             {% endfor %}
         </table>
-    {% elif info.user_role == 'Проверяющий' %}
+    {% elif info.user_role == 'Inspector' %}
         <table border="3">
             <tr>
                 <th>Наименование</th>

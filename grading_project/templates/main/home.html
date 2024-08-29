@@ -3,14 +3,14 @@
 {% block content %}
 
 <div class="users_info">
-    {% if info.user_role == 'Работник' and info.user_tables|length > 0 %}
+    {% if info.user_role == 'Teacher' and info.user_tables|length > 0 %}
     <br>
     <h1>Вам необходимо заполнить:</h1>
     <br>
 
     {% include 'main/output.html' %}
 
-    {% elif info.user_role == 'Проверяющий' %}
+    {% elif info.user_role == 'Inspector' %}
     <br>
     <h1>Вам необходимо проверить:</h1>
     <br>

@@ -6,18 +6,23 @@ from django.contrib.auth.models import User
 def home_page(request):
     if request.user.is_authenticated:
         user_object = request.user
-        gradings = models.Grading.objects.all()
-        criterias = models.Criteria.objects.all()
-        role = models.Profile.objects.get(user=user_object)
 
-        info = info_table.InfoTable(user_object)
-        info.set_role(role)
+        if models.Inspectors.objects.filter(user=user_object).exists():
+            info = info_table.InfoTable(user_object)
+            info.user_role = 'Inspector'
+            info.set_faculty(models.Inspectors.objects.get(user=user_object).audited_faculty)
 
-        if info.user_role == 'Работник':
+            profiles = models.Profile.objects.all()
+            info.find_controlled_users(profiles)
+        else:
+            user_profile = models.Profile.objects.get(user=user_object)
+            info = info_table.InfoTable(user_object)
+            info.user_role = 'Teacher'
+            info.cathedras = user_profile.teaching_cathedras
+
+            gradings = models.Grading.objects.all()
+            criterias = models.Criteria.objects.all()
             info.find_user_grading(gradings, criterias)
-        elif info.user_role == 'Проверяющий':
-            users = User.objects.all()
-            info.find_controlled_users(users)
 
         context = {
             'info': info

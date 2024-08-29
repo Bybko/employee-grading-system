@@ -35,11 +35,16 @@
                 <th><input type="text"
                         name="work_done-!SePaRaToR!-{{ table.grading.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
                         placeholder="{{ table.grading.work_done }}"></th>
-                <th>{{ table.grading.rating }}</th>
+                <th><input type="number"
+                           name="points-!SePaRaToR!-{{ table.grading.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
+                           placeholder="{{ table.grading.rating }}"></th>
             </tr>
             {% endfor %}
         </table>
     {% elif info.user_role == 'Inspector' %}
+        <p><h2>{{ info.controlled_faculty }}</h2></p>
+        {% for cathedra, teachers in info.controlled_cathedras_users.items %}
+        <p><h4>{{ cathedra.cathedra }}</h4></p>
         <table border="3">
             <tr>
                 <th>Наименование</th>
@@ -49,8 +54,8 @@
                 <th>Ответственный за ввод данных</th>
             </tr>
 
-        {% for user in info.controlled_users %}
-            {% for table in user.user_tables %}
+        {% for teacher in teachers %}
+            {% for table in teacher.user_tables %}
             <tr>
                 <th>{{ table.grading.used_standard }}</th>
                 <th>{{ table.criteria.standard_in_points }}</th>
@@ -60,11 +65,12 @@
                 <th><input type="number"
                            name="points-!SePaRaToR!-{{ table.grading.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
                            placeholder="{{ table.grading.rating }}"></th>
-                <th>{{ user.user.first_name }}  {{ user.user.last_name }}</th>
+                <th>{{ teacher.user.first_name }}  {{ teacher.user.last_name }}</th>
             </tr>
             {% endfor %}
         {% endfor %}
         </table>
+    {% endfor %}
     {% else %}
         <h1>Ошибка. У вас не настроена роль. Обратитесь к администратору.</h1>
     {% endif %}

@@ -15,6 +15,7 @@ class InfoTable:
         self.cathedras = []
         self.user_tables = []
         self.controlled_users = []
+        self.controlled_cathedras_users = {}
         self.controlled_faculty = None
 
     def find_user_grading(self, gradings: list[models.Grading], criterias: list[models.Criteria]) -> None:
@@ -44,3 +45,19 @@ class InfoTable:
 
                     self.controlled_users.append(controlled_user_info)
                     break
+
+        self.sort_users_by_cathedras()
+
+    def sort_users_by_cathedras(self):
+        cathedras = models.Cathedras.objects.filter(owning_faculty=
+                                                    models.Faculties.objects.get(faculty=
+                                                                                 self.controlled_faculty))
+
+        for cathedra in cathedras:
+            if cathedra not in self.controlled_cathedras_users:
+                self.controlled_cathedras_users[cathedra] = []
+
+            for teacher in self.controlled_users:
+                if cathedra in teacher.cathedras.all():
+                    self.controlled_cathedras_users[cathedra].append(teacher)
+

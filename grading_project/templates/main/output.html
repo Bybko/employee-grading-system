@@ -1,5 +1,13 @@
 <div class="style">
     <style>
+    summary {
+            white-space: nowrap; /* Оставляем текст в одной строке */
+            overflow: hidden; /* Скрываем переполнение */
+            text-overflow: ellipsis; /* Добавляем троеточие в конце длинного текста */
+            font-weight: bold; /* Можно сделать текст жирным для красоты */
+            cursor: pointer; /* Курсор меняется на указатель при наведении */
+            font-size: 20px;
+    }
     table {
         border-collapse: collapse; /* to make lines visible */
         width: 100%;
@@ -42,9 +50,10 @@
             {% endfor %}
         </table>
     {% elif info.user_role == 'Inspector' %}
-        <p><h2>{{ info.controlled_faculty }}</h2></p>
+        <h2>{{ info.controlled_faculty }}</h2>
         {% for cathedra, teachers in info.controlled_cathedras_users.items %}
-        <p><h4>{{ cathedra.cathedra }}</h4></p>
+        <details>
+            <summary>{{ cathedra.cathedra }}</summary>
         <table border="3">
             <tr>
                 <th>Наименование</th>
@@ -70,9 +79,10 @@
             {% endfor %}
         {% endfor %}
         </table>
+        <button type="submit">Сохранить</button>
+        </details>
     {% endfor %}
     {% else %}
         <h1>Ошибка. У вас не настроена роль. Обратитесь к администратору.</h1>
     {% endif %}
-    <button type="submit">Сохранить</button>
 </form>

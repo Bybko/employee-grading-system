@@ -34,6 +34,7 @@
                 <th>Норматив</th>
                 <th>Выполненная работа</th>
                 <th>Баллы</th>
+                <th>Статус</th>
             </tr>
 
             {% for table in info.user_tables %}
@@ -46,6 +47,7 @@
                 <th><input type="number"
                            name="points-!SePaRaToR!-{{ table.grading.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
                            placeholder="{{ table.grading.rating }}"></th>
+                <th>{{ table.grading.get_status_display }}</th>
             </tr>
             {% endfor %}
         </table>
@@ -61,6 +63,7 @@
                 <th>Выполненная работа</th>
                 <th>Баллы</th>
                 <th>Ответственный за ввод данных</th>
+                <th>Статус</th>
             </tr>
 
         {% for teacher in teachers %}
@@ -75,6 +78,14 @@
                            name="points-!SePaRaToR!-{{ table.grading.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
                            placeholder="{{ table.grading.rating }}"></th>
                 <th>{{ teacher.user.first_name }}  {{ teacher.user.last_name }}</th>
+                <th><select id="status" name="status-!SePaRaToR!-{{ teacher.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}">
+                    {% for value, display in status_choices %}
+                        <option value="{{ value }}"
+                                {% if value == table.grading.status %} selected {% endif %}>
+                            {{ display }}
+                        </option>
+                    {% endfor %}
+                </select></th>
             </tr>
             {% endfor %}
         {% endfor %}

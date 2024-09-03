@@ -25,7 +25,8 @@ def home_page(request):
             info.find_user_grading(gradings, criterias)
 
         context = {
-            'info': info
+            'info': info,
+            'status_choices': models.Grading.STATUS_CHOICES
         }
 
         return render(request, 'main/home.html', context)
@@ -56,6 +57,12 @@ def save_form_function(request):
                 test_work_title = models.Criteria.objects.get(title=key.split('-!SePaRaToR!-')[2])
                 grading = models.Grading.objects.get(user=test_user, used_standard=test_work_title)
                 grading.rating = value
+                grading.save()
+            if key.startswith('status') and value != '':
+                test_user = User.objects.get(username=key.split('-!SePaRaToR!-')[1])
+                test_work_title = models.Criteria.objects.get(title=key.split('-!SePaRaToR!-')[2])
+                grading = models.Grading.objects.get(user=test_user, used_standard=test_work_title)
+                grading.status = value
                 grading.save()
 
     return redirect('home')

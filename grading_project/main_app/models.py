@@ -51,6 +51,15 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.get_full_name()
 
+    def update_ratings(self):
+        # Пересчитать рейтинги для пользователя, суммируя только approved записи
+        total_points = Grading.objects.filter(
+            user=self.user,
+            status='approved'
+        ).aggregate(total=models.Sum('rating'))['total']
+        self.ratings = total_points or 0
+        self.save(update_fields=['ratings'])
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -114,22 +123,14 @@ class Grading(models.Model):
     def __str__(self):
         return f'{self.user} - {self.used_standard} - {self.rating}'
 
-# Сигнал для обновления баллов в Profile после сохранения Grading
 
-
+# Сигнал для пересчета рейтинга после сохранения записи в Grading
 @receiver(post_save, sender=Grading)
 def update_user_profile_on_save(sender, instance, **kwargs):
-    user_profile = instance.user.profile
-    total_points = Grading.objects.filter(user=instance.user).aggregate(total=models.Sum('rating'))['total']
-    user_profile.ratings = total_points or 0
-    user_profile.save()
-
-# Сигнал для обновления баллов в Profile после удаления Grading
+    instance.user.profile.update_ratings()
 
 
+# Сигнал для пересчета рейтинга после удаления записи в Grading
 @receiver(post_delete, sender=Grading)
 def update_user_profile_on_delete(sender, instance, **kwargs):
-    user_profile = instance.user.profile
-    total_points = Grading.objects.filter(user=instance.user).aggregate(total=models.Sum('rating'))['total']
-    user_profile.ratings = total_points or 0
-    user_profile.save()
+    instance.user.profile.update_ratings()

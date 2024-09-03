@@ -64,6 +64,7 @@ class GradingAdmin(admin.ModelAdmin):
     list_display = ['full_name', 'criteria_title', 'work_done', 'rating', 'status']
     search_fields = ['user__first_name', 'user__last_name', 'used_standard__title', 'work_done', 'rating']
     list_filter = ['status']
+    list_editable = ['status']
 
     def criteria_title(self, obj):
         return obj.used_standard.title

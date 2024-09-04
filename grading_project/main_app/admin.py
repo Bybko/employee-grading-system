@@ -10,7 +10,6 @@ from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 
 
-
 def user_str(self):
     full_name = self.get_full_name()
     return full_name if full_name else self.username
@@ -65,7 +64,8 @@ class ProfileAdmin(admin.ModelAdmin):
         # Собираем данные и заполняем строки
         data = []
         for profile in queryset:
-            grading_records = Grading.objects.filter(user=profile.user)
+            # Фильтрация записей по статусу 'approved'
+            grading_records = Grading.objects.filter(user=profile.user, status='approved')
             for grading in grading_records:
                 row = [
                     profile.user.get_full_name(),
@@ -147,6 +147,7 @@ class InspectorsAdmin(admin.ModelAdmin):
     list_display = ['user', 'audited_faculty']
     search_fields = ['user__first_name', 'user__last_name', 'audited_faculty__faculty']
     list_filter = ['audited_faculty']
+    list_editable = ['audited_faculty']
 
 
 admin.site.register(Profile, ProfileAdmin)
@@ -156,4 +157,3 @@ admin.site.register(Table, TableAdmin)
 admin.site.register(Faculties, FacultiesAdmin)
 admin.site.register(Cathedras, CathedrasAdmin)
 admin.site.register(Inspectors, InspectorsAdmin)
-

@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
+from .forms import GradingForm
 
 
 def user_str(self):
@@ -111,6 +112,7 @@ class CriteriaAdmin(admin.ModelAdmin):
 
 
 class GradingAdmin(admin.ModelAdmin):
+    form = GradingForm
     list_display = ['full_name', 'criteria_title', 'work_done', 'rating', 'status']
     search_fields = ['user__first_name', 'user__last_name', 'used_standard__title', 'work_done', 'rating']
     list_filter = ['status']
@@ -144,10 +146,13 @@ class CathedrasAdmin(admin.ModelAdmin):
 
 
 class InspectorsAdmin(admin.ModelAdmin):
-    list_display = ['user', 'audited_faculty']
+    list_display = ['user', 'get_audited_faculties']
     search_fields = ['user__first_name', 'user__last_name', 'audited_faculty__faculty']
     list_filter = ['audited_faculty']
-    list_editable = ['audited_faculty']
+
+    def get_audited_faculties(self, obj):
+        return ", ".join([faculty.faculty for faculty in obj.audited_faculty.all()])
+    get_audited_faculties.short_description = 'Факультеты'
 
 
 admin.site.register(Profile, ProfileAdmin)

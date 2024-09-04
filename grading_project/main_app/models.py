@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, pre_delete
 from django.dispatch import receiver
 
 
@@ -29,7 +29,7 @@ class Cathedras(models.Model):
 
 class Inspectors(models.Model):
     user = models.OneToOneField(User, verbose_name='Юзер', on_delete=models.CASCADE)
-    audited_faculty = models.ForeignKey(Faculties, verbose_name='Факультет', on_delete=models.PROTECT)
+    audited_faculty = models.ManyToManyField(Faculties, verbose_name='Факультеты')
 
     class Meta:
         verbose_name = 'Проверяющие'
@@ -61,16 +61,11 @@ class Profile(models.Model):
         self.save(update_fields=['ratings'])
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-
 # @receiver(post_save, sender=User)
-# def save_user_profile(sender, instance, **kwargs):
-#     instance.profile.save()
-
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
+#
 
 class Table(models.Model):
     table = models.CharField(verbose_name='Название таблицы', max_length=50, blank=False)
@@ -95,7 +90,7 @@ class Criteria(models.Model):
     def __str__(self):
         return self.title
 
-
+#TODO: Заменить привязку работы к юзеру на привязку к профилю
 class Grading(models.Model):
     STATUS_CHOICES = [
         ('not_checked', 'Не проверено'),
@@ -130,7 +125,7 @@ def update_user_profile_on_save(sender, instance, **kwargs):
     instance.user.profile.update_ratings()
 
 
-# Сигнал для пересчета рейтинга после удаления записи в Grading
-@receiver(post_delete, sender=Grading)
+# Сигнал для пересчета рейтинга перед удалением записи в Grading
+@receiver(pre_delete, sender=Grading)
 def update_user_profile_on_delete(sender, instance, **kwargs):
     instance.user.profile.update_ratings()

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, pre_delete
 from django.dispatch import receiver
 
 
@@ -90,7 +90,7 @@ class Criteria(models.Model):
     def __str__(self):
         return self.title
 
-
+#TODO: Заменить привязку работы к юзеру на привязку к профилю
 class Grading(models.Model):
     STATUS_CHOICES = [
         ('not_checked', 'Не проверено'),
@@ -118,14 +118,14 @@ class Grading(models.Model):
     def __str__(self):
         return f'{self.user} - {self.used_standard} - {self.rating}'
 
-#TODO: скорее всего тут проблема после попытки удаления юзера из-за попытки обновления баллов в профиле
+
 # Сигнал для пересчета рейтинга после сохранения записи в Grading
 @receiver(post_save, sender=Grading)
 def update_user_profile_on_save(sender, instance, **kwargs):
     instance.user.profile.update_ratings()
 
 
-# Сигнал для пересчета рейтинга после удаления записи в Grading
-@receiver(post_delete, sender=Grading)
+# Сигнал для пересчета рейтинга перед удалением записи в Grading
+@receiver(pre_delete, sender=Grading)
 def update_user_profile_on_delete(sender, instance, **kwargs):
     instance.user.profile.update_ratings()

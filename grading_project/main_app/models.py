@@ -29,7 +29,7 @@ class Cathedras(models.Model):
 
 class Inspectors(models.Model):
     user = models.OneToOneField(User, verbose_name='Юзер', on_delete=models.CASCADE)
-    audited_faculty = models.ForeignKey(Faculties, verbose_name='Факультет', on_delete=models.PROTECT)
+    audited_faculty = models.ManyToManyField(Faculties, verbose_name='Факультеты')
 
     class Meta:
         verbose_name = 'Проверяющие'
@@ -61,16 +61,11 @@ class Profile(models.Model):
         self.save(update_fields=['ratings'])
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-
 # @receiver(post_save, sender=User)
-# def save_user_profile(sender, instance, **kwargs):
-#     instance.profile.save()
-
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
+#
 
 class Table(models.Model):
     table = models.CharField(verbose_name='Название таблицы', max_length=50, blank=False)
@@ -123,7 +118,7 @@ class Grading(models.Model):
     def __str__(self):
         return f'{self.user} - {self.used_standard} - {self.rating}'
 
-
+#TODO: скорее всего тут проблема после попытки удаления юзера из-за попытки обновления баллов в профиле
 # Сигнал для пересчета рейтинга после сохранения записи в Grading
 @receiver(post_save, sender=Grading)
 def update_user_profile_on_save(sender, instance, **kwargs):

@@ -19,5 +19,5 @@ class GradingForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Используем select_related для получения данных профиля пользователя
-        self.fields['user'].queryset = User.objects.filter(profile__isnull=False).select_related('profile')
+        # Получаем данные пользователя
+        self.fields['user'].queryset = Profile.objects.select_related('user')

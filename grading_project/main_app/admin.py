@@ -46,7 +46,7 @@ class ProfileAdmin(admin.ModelAdmin):
 
     def user_grading_report(self, request, profile_id):
         profile = self.get_object(request, profile_id)
-        grading_records = Grading.objects.filter(user=profile.user)
+        grading_records = Grading.objects.filter(user=profile)
 
         return render(request, 'admin/user_grading_report.html', {
             'profile': profile,
@@ -66,7 +66,7 @@ class ProfileAdmin(admin.ModelAdmin):
         data = []
         for profile in queryset:
             # Фильтрация записей по статусу 'approved'
-            grading_records = Grading.objects.filter(user=profile.user, status='approved')
+            grading_records = Grading.objects.filter(user=profile, status='approved')
             for grading in grading_records:
                 row = [
                     profile.user.get_full_name(),
@@ -114,7 +114,7 @@ class CriteriaAdmin(admin.ModelAdmin):
 class GradingAdmin(admin.ModelAdmin):
     form = GradingForm
     list_display = ['full_name', 'criteria_title', 'work_done', 'rating', 'status']
-    search_fields = ['user__first_name', 'user__last_name', 'used_standard__title', 'work_done', 'rating']
+    search_fields = ['user__user__first_name', 'user__user__last_name', 'used_standard__title', 'work_done', 'rating']
     list_filter = ['status']
     list_editable = ['status']
 
@@ -122,11 +122,12 @@ class GradingAdmin(admin.ModelAdmin):
         return obj.used_standard.title
 
     def full_name(self, obj):
-        return obj.user.get_full_name()
+        # Достаем имя из связанного User объекта через Profile
+        return obj.user.user.get_full_name()
 
     full_name.short_description = 'Юзер'
-
     criteria_title.short_description = 'Наименование работ'
+
 
 
 class TableAdmin(admin.ModelAdmin):

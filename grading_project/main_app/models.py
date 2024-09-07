@@ -54,18 +54,12 @@ class Profile(models.Model):
     def update_ratings(self):
         # Пересчитать рейтинги для пользователя, суммируя только approved записи
         total_points = Grading.objects.filter(
-            user=self.user,
+            user=self,  # Изменено с self.user на self, так как теперь связь через Profile
             status='approved'
         ).aggregate(total=models.Sum('rating'))['total']
         self.ratings = total_points or 0
         self.save(update_fields=['ratings'])
 
-
-# @receiver(post_save, sender=User)
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Profile.objects.create(user=instance)
-#
 
 class Table(models.Model):
     table = models.CharField(verbose_name='Название таблицы', max_length=50, blank=False)
@@ -90,14 +84,14 @@ class Criteria(models.Model):
     def __str__(self):
         return self.title
 
-#TODO: Заменить привязку работы к юзеру на привязку к профилю
+
 class Grading(models.Model):
     STATUS_CHOICES = [
         ('not_checked', 'Не проверено'),
         ('approved', 'Одобрено'),
         ('has_errors', 'Есть ошибки'),
     ]
-    user = models.ForeignKey(User, verbose_name='Юзер', on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, verbose_name='Юзер', on_delete=models.CASCADE)
     used_standard = models.ForeignKey(Criteria, verbose_name='Наименование работ', on_delete=models.PROTECT)
     work_done = models.CharField(verbose_name='Выполненная работа', max_length=400, blank=True)
     rating = models.PositiveIntegerField(verbose_name='Баллы', default=0)
@@ -122,10 +116,10 @@ class Grading(models.Model):
 # Сигнал для пересчета рейтинга после сохранения записи в Grading
 @receiver(post_save, sender=Grading)
 def update_user_profile_on_save(sender, instance, **kwargs):
-    instance.user.profile.update_ratings()
+    instance.user.update_ratings()  # Ссылка на метод модели Profile
 
 
 # Сигнал для пересчета рейтинга перед удалением записи в Grading
-@receiver(pre_delete, sender=Grading)
+@receiver(post_delete, sender=Grading)
 def update_user_profile_on_delete(sender, instance, **kwargs):
-    instance.user.profile.update_ratings()
+    instance.user.update_ratings()

@@ -13,6 +13,7 @@ class InfoTable:
         self.user = user
         self.user_role = 'None'
         self.cathedras = []
+        self.faculties = []
         self.user_tables = []
         self.controlled_users = []
         self.controlled_cathedras_users = {}
@@ -27,7 +28,7 @@ class InfoTable:
                         new_table = Table(grading, criteria)
                         self.user_tables.append(new_table)
 
-    def set_faculties(self, user_object: User):
+    def set_faculties(self, user_object: User) -> None:
         faculties = models.Inspectors.objects.get(user=user_object).audited_faculty
 
         for faculty in faculties.all():
@@ -41,6 +42,10 @@ class InfoTable:
                 if compared_cathedra.owning_faculty.faculty in self.controlled_faculties:
                     controlled_user_info = InfoTable(profile.user)
                     controlled_user_info.cathedras = profile.teaching_cathedras
+                    for cathedra in controlled_user_info.cathedras.all():
+                        if cathedra.owning_faculty.faculty not in controlled_user_info.faculties:
+                            controlled_user_info.faculties.append(cathedra.owning_faculty.faculty)
+
                     controlled_user_info.user_role = 'Worker'
 
                     gradings = models.Grading.objects.all()
@@ -52,7 +57,7 @@ class InfoTable:
 
         self.sort_users_by_cathedras()
 
-    def sort_users_by_cathedras(self):
+    def sort_users_by_cathedras(self) -> None:
         cathedras = []
         for faculty in self.controlled_faculties:
             faculty_cathedras = models.Cathedras.objects.filter(owning_faculty=
@@ -66,4 +71,3 @@ class InfoTable:
             for teacher in self.controlled_users:
                 if cathedra in teacher.cathedras.all():
                     self.controlled_cathedras_users[cathedra].append(teacher)
-

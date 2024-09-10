@@ -10,7 +10,7 @@ def home_page(request):
         if models.Inspectors.objects.filter(user=user_object).exists():
             info = info_table.InfoTable(user_object)
             info.user_role = 'Inspector'
-            info.set_faculty(models.Inspectors.objects.get(user=user_object).audited_faculty)
+            info.set_faculties(user_object)
 
             profiles = models.Profile.objects.all()
             info.find_controlled_users(profiles)
@@ -23,6 +23,8 @@ def home_page(request):
             gradings = models.Grading.objects.all()
             criterias = models.Criteria.objects.all()
             info.find_user_grading(gradings, criterias)
+
+
 
         context = {
             'info': info,
@@ -47,21 +49,25 @@ def save_form_function(request):
     if request.method == 'POST':
         for key, value in request.POST.items():
             if key.startswith('work_done') and value != '':
+                print(key.split('-!SePaRaToR!-')[1])
                 test_user = User.objects.get(username=key.split('-!SePaRaToR!-')[1])
+                profile = models.Profile.objects.get(user=test_user)
                 test_work_title = models.Criteria.objects.get(title=key.split('-!SePaRaToR!-')[2])
-                grading = models.Grading.objects.get(user=test_user, used_standard=test_work_title)
+                grading = models.Grading.objects.get(user=profile, used_standard=test_work_title)
                 grading.work_done = value
                 grading.save()
             if key.startswith('points') and value != '':
                 test_user = User.objects.get(username=key.split('-!SePaRaToR!-')[1])
+                profile = models.Profile.objects.get(user=test_user)
                 test_work_title = models.Criteria.objects.get(title=key.split('-!SePaRaToR!-')[2])
-                grading = models.Grading.objects.get(user=test_user, used_standard=test_work_title)
+                grading = models.Grading.objects.get(user=profile, used_standard=test_work_title)
                 grading.rating = value
                 grading.save()
             if key.startswith('status') and value != '':
                 test_user = User.objects.get(username=key.split('-!SePaRaToR!-')[1])
+                profile = models.Profile.objects.get(user=test_user)
                 test_work_title = models.Criteria.objects.get(title=key.split('-!SePaRaToR!-')[2])
-                grading = models.Grading.objects.get(user=test_user, used_standard=test_work_title)
+                grading = models.Grading.objects.get(user=profile, used_standard=test_work_title)
                 grading.status = value
                 grading.save()
 

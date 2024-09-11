@@ -8,9 +8,44 @@
            crossorigin="anonymous">
     {% load crispy_forms_tags %}
     <title>{% block title %}My Site{% endblock %}</title>
+    <style>
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/static/img/background.jpg');
+            background-size: cover;
+            filter: blur(5px); /* Размытие фона */
+            z-index: -1; /* Чтобы фон был позади всего контента */
+            opacity: 0.5; /* Прозрачность */
+        }
+        .navbar {
+            background-color: #0a307e !important; /* Синий цвет шапки */
+        }
+        .content {
+            min-height: calc(100vh - 150px); /* Учитываем высоту подвала */
+            padding-bottom: 20px; /* Отступ снизу для чистой зоны перед подвалом */
+        }
+        footer {
+            width: 100%;
+            background-color: #0a307e;
+            text-align: center;
+            color: white;
+            padding: 20px 0;
+            margin-top: auto; /* Это сделает подвал всегда внизу */
+        }
+        footer img {
+            max-height: 100px; /* Размер изображения в подвале */
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- Размытое фоновое изображение -->
+    <div class="background"></div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <div>
                 <ul class="navbar-nav">
@@ -46,10 +81,16 @@
             </div>
         </div>
     </nav>
-    <div class="container">
+
+    <div class="container content">
         {% block content %}
         {% endblock %}
     </div>
+
+    <footer>
+        <!--<img src="/static/img/logo_BrGTU.jpg" alt="Логотип в подвале"> --> <!-- Логотип в подвале -->
+        <p>© 2024 Учреждение образования "Брестский государственный технический университет"</p>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

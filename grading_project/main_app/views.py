@@ -7,13 +7,29 @@ def home_page(request):
     if request.user.is_authenticated:
         user_object = request.user
 
+        sort_by = request.GET.get('sort_by', 'used_standard__title')  # 'used_standard__title' will be default sort
+        order = request.GET.get('order', 'asc')
+
+        sort_field = {
+            'name': 'used_standard__title',
+            'normative': 'used_standard__standard_in_points',
+            'work_done': 'work_done',
+            'points': 'rating',
+            'responsible': 'user__user__username',
+            'faculty': 'user__teaching_cathedras__owning_faculty__faculty',
+            'status': 'status'
+        }.get(sort_by, 'used_standard__title') # If the field is not found, the default sorting is by job title
+
+        if order == 'desc':
+            sort_field = '-' + sort_field
+
         if models.Inspectors.objects.filter(user=user_object).exists():
             info = info_table.InfoTable(user_object)
             info.user_role = 'Inspector'
             info.set_faculties(user_object)
 
             profiles = models.Profile.objects.all()
-            info.find_controlled_users(profiles)
+            info.find_controlled_users(profiles, sort_field)
         else:
             user_profile = models.Profile.objects.get(user=user_object)
             info = info_table.InfoTable(user_object)
@@ -21,14 +37,13 @@ def home_page(request):
             info.cathedras = user_profile.teaching_cathedras
 
             gradings = models.Grading.objects.all()
-            criterias = models.Criteria.objects.all()
-            info.find_user_grading(gradings, criterias)
-
+            info.find_user_grading(gradings)
 
 
         context = {
             'info': info,
-            'status_choices': models.Grading.STATUS_CHOICES
+            'status_choices': models.Grading.STATUS_CHOICES,
+            'current_order': 'asc' if order == 'desc' else 'desc'  # Change the order for the next click
         }
 
         return render(request, 'main/home.html', context)

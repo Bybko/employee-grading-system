@@ -19,14 +19,11 @@ class InfoTable:
         self.controlled_cathedras_users = {}
         self.controlled_faculties = []
 
-    def find_user_grading(self, gradings: list[models.Grading], criterias: list[models.Criteria]) -> None:
-        # read how get object by foreign key later
+    def find_user_grading(self, gradings: list[models.Grading]) -> None:
         for grading in gradings:
             if grading.user.user.username == self.user.username:
-                for criteria in criterias:
-                    if str(criteria.title) == str(grading.used_standard):
-                        new_table = Table(grading, criteria)
-                        self.user_tables.append(new_table)
+                new_table = Table(grading, grading.used_standard)
+                self.user_tables.append(new_table)
 
     def set_faculties(self, user_object: User) -> None:
         faculties = models.Inspectors.objects.get(user=user_object).audited_faculty
@@ -34,7 +31,7 @@ class InfoTable:
         for faculty in faculties.all():
             self.controlled_faculties.append(faculty.faculty)
 
-    def find_controlled_users(self, profiles: list[models.Profile]) -> None:
+    def find_controlled_users(self, profiles: list[models.Profile], sort_field: str) -> None:
         for profile in profiles:
             for teaching_cathedra in profile.teaching_cathedras.all():
                 compared_cathedra = models.Cathedras.objects.get(cathedra=teaching_cathedra)
@@ -48,9 +45,8 @@ class InfoTable:
 
                     controlled_user_info.user_role = 'Worker'
 
-                    gradings = models.Grading.objects.all()
-                    criterias = models.Criteria.objects.all()
-                    controlled_user_info.find_user_grading(gradings, criterias)
+                    gradings = models.Grading.objects.filter(user=profile).order_by(sort_field)
+                    controlled_user_info.find_user_grading(gradings)
 
                     self.controlled_users.append(controlled_user_info)
                     break

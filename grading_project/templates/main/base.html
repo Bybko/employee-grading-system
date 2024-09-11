@@ -21,13 +21,16 @@
             z-index: -1; /* Чтобы фон был позади всего контента */
             opacity: 0.5; /* Прозрачность */
         }
+
         .navbar {
             background-color: #0a307e !important; /* Синий цвет шапки */
         }
+
         .content {
             min-height: calc(100vh - 150px); /* Учитываем высоту подвала */
             padding-bottom: 20px; /* Отступ снизу для чистой зоны перед подвалом */
         }
+
         footer {
             width: 100%;
             background-color: #0a307e;
@@ -36,6 +39,7 @@
             padding: 20px 0;
             margin-top: auto; /* Это сделает подвал всегда внизу */
         }
+
         footer img {
             max-height: 100px; /* Размер изображения в подвале */
         }
@@ -51,9 +55,6 @@
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="/home">Главная</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/create-post">Документы</a>
                     </li>
                     {%  if user.is_superuser %}
                     <li class="nav-item">

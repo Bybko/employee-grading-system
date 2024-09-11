@@ -27,6 +27,16 @@
     th {
         background-color: #f2f2f2;
     }
+
+    th a {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+    }
+
+    th a:hover {
+        text-decoration: underline;
+    }
     </style>
 </div>
 
@@ -78,13 +88,13 @@
     {% elif info.user_role == 'Inspector' %}
         <table border="3">
             <tr>
-                <th>Наименование</th>
-                <th>Норматив</th>
-                <th>Выполненная работа</th>
-                <th>Баллы</th>
-                <th>Ответственный за ввод данных</th>
-                <th>Факультет</th>
-                <th>Статус</th>
+                <th><a href="?sort_by=name&order={{ current_order }}">Наименование</a></th>
+                <th><a href="?sort_by=normative&order={{ current_order }}">Норматив</a></th>
+                <th><a href="?sort_by=work_done&order={{ current_order }}">Выполненная работа</a></th>
+                <th><a href="?sort_by=points&order={{ current_order }}">Баллы</a></th>
+                <th><a href="?sort_by=responsible&order={{ current_order }}">Ответственный за ввод данных</a></th>
+                <th><a href="?sort_by=faculty&order={{ current_order }}">Факультет</a></th>
+                <th><a href="?sort_by=status&order={{ current_order }}">Статус</a></th>
             </tr>
         {% for teacher in info.controlled_users %}
             {% for table in teacher.user_tables %}

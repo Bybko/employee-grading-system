@@ -129,7 +129,6 @@ class GradingAdmin(admin.ModelAdmin):
     criteria_title.short_description = 'Наименование работ'
 
 
-
 class TableAdmin(admin.ModelAdmin):
     list_display = ['table']
     search_fields = ['table']

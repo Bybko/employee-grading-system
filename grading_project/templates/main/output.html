@@ -1,12 +1,17 @@
 <div class="style">
     <style>
+    textarea {
+        min-height: 40px;
+        min-width: 300px;
+        resize: none;
+    }
     summary {
-            white-space: nowrap; /* Оставляем текст в одной строке */
-            overflow: hidden; /* Скрываем переполнение */
-            text-overflow: ellipsis; /* Добавляем троеточие в конце длинного текста */
-            font-weight: bold; /* Можно сделать текст жирным для красоты */
-            cursor: pointer; /* Курсор меняется на указатель при наведении */
-            font-size: 20px;
+        white-space: nowrap; /* Оставляем текст в одной строке */
+        overflow: hidden; /* Скрываем переполнение */
+        text-overflow: ellipsis; /* Добавляем троеточие в конце длинного текста */
+        font-weight: bold; /* Можно сделать текст жирным для красоты */
+        cursor: pointer; /* Курсор меняется на указатель при наведении */
+        font-size: 20px;
     }
     table {
         border-collapse: collapse; /* to make lines visible */
@@ -25,6 +30,24 @@
     </style>
 </div>
 
+<div class="script">
+    <script>
+        document.addEventListener('input', function (event) {
+            if (event.target.tagName.toLowerCase() === 'textarea') {
+                autoResizeTextarea(event.target);
+            }
+        });
+
+        function autoResizeTextarea(textarea) {
+            // Сброс высоты, чтобы правильно рассчитать новую высоту
+            textarea.style.height = 'auto';
+            // Установка высоты равной контенту
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+    </script>
+</div>
+
+
 <form method="POST" action="{% url 'save-form' %}">
     {% csrf_token %}
     {% if info.user_role == 'Teacher' %}
@@ -41,9 +64,9 @@
             <tr>
                 <th>{{ table.grading.used_standard }}</th>
                 <th>{{ table.criteria.standard_in_points }}</th>
-                <th><input type="text"
+                <th><textarea
                         name="work_done-!SePaRaToR!-{{ table.grading.user.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
-                        placeholder="{{ table.grading.work_done }}"></th>
+                        placeholder="{{ table.grading.work_done }}"></textarea></th>
                 <th><input type="number"
                            name="points-!SePaRaToR!-{{ table.grading.user.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
                            placeholder="{{ table.grading.rating }}"></th>
@@ -68,9 +91,9 @@
             <tr>
                 <th>{{ table.grading.used_standard }}</th>
                 <th>{{ table.criteria.standard_in_points }}</th>
-                <th><input type="text"
+                <th><textarea
                            name="work_done-!SePaRaToR!-{{ table.grading.user.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
-                           placeholder="{{ table.grading.work_done }}"></th>
+                           placeholder="{{ table.grading.work_done }}"></textarea></th>
                 <th><input type="number"
                            name="points-!SePaRaToR!-{{ table.grading.user.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
                            placeholder="{{ table.grading.rating }}"></th>

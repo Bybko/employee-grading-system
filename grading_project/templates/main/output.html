@@ -96,29 +96,32 @@
                 <th><a href="?sort_by=faculty&order={{ current_order }}">Факультет</a></th>
                 <th><a href="?sort_by=status&order={{ current_order }}">Статус</a></th>
             </tr>
-        {% for teacher in info.controlled_users %}
-            {% for table in teacher.user_tables %}
+        {% for table in info.sorted_controlled_teachers_gradings %}
             <tr>
-                <th>{{ table.grading.used_standard }}</th>
-                <th>{{ table.criteria.standard_in_points }}</th>
+                <th>{{ table.used_standard }}</th>
+                <th>{{ table.used_standard.standard_in_points }}</th>
                 <th><textarea
-                           name="work_done-!SePaRaToR!-{{ table.grading.user.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
-                           placeholder="{{ table.grading.work_done }}"></textarea></th>
+                           name="work_done-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
+                           placeholder="{{ table.work_done }}"></textarea></th>
                 <th><input type="number"
-                           name="points-!SePaRaToR!-{{ table.grading.user.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
-                           placeholder="{{ table.grading.rating }}"></th>
-                <th>{{ teacher.user.first_name }}  {{ teacher.user.last_name }}</th>
-                <th>{{ teacher.faculties|join:", " }}</th>
-                <th><select id="status" name="status-!SePaRaToR!-{{ teacher.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}">
+                           name="points-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
+                           placeholder="{{ table.rating }}"></th>
+                <th>{{ table.user.user.first_name }}  {{ table.user.user.last_name }}</th>
+                <th>{% for teacher in info.controlled_users %}
+                        {% if teacher.user == table.user.user %}
+                            {{ teacher.faculties|join:", " }}
+                        {% endif %}
+                    {% endfor %}
+                </th>
+                <th><select id="status" name="status-!SePaRaToR!-{{ user.user.username }}-!SePaRaToR!-{{ table.used_standard }}">
                     {% for value, display in status_choices %}
                         <option value="{{ value }}"
-                                {% if value == table.grading.status %} selected {% endif %}>
+                                {% if value == table.status %} selected {% endif %}>
                             {{ display }}
                         </option>
                     {% endfor %}
                 </select></th>
             </tr>
-            {% endfor %}
         {% endfor %}
         </table>
         <button type="submit">Сохранить</button>

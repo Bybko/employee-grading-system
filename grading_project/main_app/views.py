@@ -29,7 +29,9 @@ def home_page(request):
             info.set_faculties(user_object)
 
             profiles = models.Profile.objects.all()
-            info.find_controlled_users(profiles, sort_field)
+            info.find_controlled_users(profiles)
+
+            info.sort_all_teachers_gradings(sort_field)
         else:
             user_profile = models.Profile.objects.get(user=user_object)
             info = info_table.InfoTable(user_object)

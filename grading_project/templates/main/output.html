@@ -113,7 +113,7 @@
                         {% endif %}
                     {% endfor %}
                 </th>
-                <th><select id="status" name="status-!SePaRaToR!-{{ user.user.username }}-!SePaRaToR!-{{ table.used_standard }}">
+                <th><select id="status" name="status-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}">
                     {% for value, display in status_choices %}
                         <option value="{{ value }}"
                                 {% if value == table.status %} selected {% endif %}>

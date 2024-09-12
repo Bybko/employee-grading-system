@@ -104,6 +104,7 @@ class ProfileAdmin(admin.ModelAdmin):
 class CriteriaAdmin(admin.ModelAdmin):
     list_display = ['title', 'standard_in_points', 'table_name']
     search_fields = ['title', 'standard_in_points', 'table_title__table']
+    list_filter = ['table_title']
 
     def table_name(self, obj):
         return obj.table_title.table

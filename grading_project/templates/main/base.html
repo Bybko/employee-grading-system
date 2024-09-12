@@ -23,7 +23,7 @@
         }
 
         .navbar {
-            background-color: #0a307e !important; /* Синий цвет шапки */
+            background-color: #202f5b !important; /* Синий цвет шапки */
         }
 
         .content {
@@ -33,15 +33,24 @@
 
         footer {
             width: 100%;
-            background-color: #0a307e;
-            text-align: center;
-            color: white;
-            padding: 20px 0;
-            margin-top: auto; /* Это сделает подвал всегда внизу */
+            background-color: white;
+            color: black;
+            padding: 20px;
+             margin-top: auto;
+            display: flex;
+            justify-content: space-between; /* Логотип слева, текст по центру */
+            align-items: center; /* Выравнивание по вертикали */
         }
 
         footer img {
             max-height: 100px; /* Размер изображения в подвале */
+            margin-left: 20px; /* Отступ от края */
+        }
+
+        footer p {
+            text-align: center; /* Центрирование текста */
+            flex-grow: 1; /* Позволяет тексту занять оставшееся пространство */
+            margin: 0; /* Убираем отступы у текста */
         }
     </style>
 </head>
@@ -89,7 +98,7 @@
     </div>
 
     <footer>
-        <!--<img src="/static/img/logo_BrGTU.jpg" alt="Логотип в подвале"> --> <!-- Логотип в подвале -->
+        <img src="/static/img/logo_BrGTU.jpg" alt="Логотип в подвале"> <!-- Логотип в подвале -->
         <p>© 2024 Учреждение образования "Брестский государственный технический университет"</p>
     </footer>
 

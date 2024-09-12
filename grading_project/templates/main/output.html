@@ -70,17 +70,17 @@
                 <th>Статус</th>
             </tr>
 
-            {% for table in info.user_tables %}
+            {% for table in info.sorted_gradings %}
             <tr>
-                <th>{{ table.grading.used_standard }}</th>
-                <th>{{ table.criteria.standard_in_points }}</th>
+                <th>{{ table.used_standard }}</th>
+                <th>{{ table.used_standard.standard_in_points }}</th>
                 <th><textarea
-                        name="work_done-!SePaRaToR!-{{ table.grading.user.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
-                        placeholder="{{ table.grading.work_done }}"></textarea></th>
+                        name="work_done-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
+                        placeholder="{{ table.work_done }}"></textarea></th>
                 <th><input type="number"
-                           name="points-!SePaRaToR!-{{ table.grading.user.user.username }}-!SePaRaToR!-{{ table.grading.used_standard }}"
-                           placeholder="{{ table.grading.rating }}"></th>
-                <th>{{ table.grading.get_status_display }}</th>
+                           name="points-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
+                           placeholder="{{ table.rating }}"></th>
+                <th>{{ table.get_status_display }}</th>
             </tr>
             {% endfor %}
         </table>
@@ -108,7 +108,7 @@
                            placeholder="{{ table.rating }}"></th>
                 <th>{{ table.user.user.first_name }}  {{ table.user.user.last_name }}</th>
                 <th>{% for teacher in info.controlled_users %}
-                        {% if teacher.user == table.user.user %}
+                        {% if teacher.user.profile == table.user %}
                             {{ teacher.faculties|join:", " }}
                         {% endif %}
                     {% endfor %}

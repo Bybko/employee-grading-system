@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="users_info">
-    {% if info.user_role == 'Teacher' and info.user_tables|length > 0 %}
+    {% if info.user_role == 'Teacher' and info.sorted_gradings|length > 0 %}
     <br>
     <h1>Вам необходимо заполнить:</h1>
     <br>

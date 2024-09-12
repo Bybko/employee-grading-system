@@ -26,21 +26,15 @@ def home_page(request):
         if models.Inspectors.objects.filter(user=user_object).exists():
             info = info_table.InfoTable(user_object)
             info.user_role = 'Inspector'
-            info.set_faculties(user_object)
+            info.set_controlled_faculties()
+            info.find_controlled_users()
 
-            profiles = models.Profile.objects.all()
-            info.find_controlled_users(profiles)
-
-            info.sort_all_teachers_gradings(sort_field)
+            info.sort_all_controlled_gradings(sort_field)
         else:
-            user_profile = models.Profile.objects.get(user=user_object)
             info = info_table.InfoTable(user_object)
             info.user_role = 'Teacher'
-            info.cathedras = user_profile.teaching_cathedras
 
-            gradings = models.Grading.objects.all()
-            info.find_user_grading(gradings)
-
+            info.sort_all_self_gradins(sort_field)
 
         context = {
             'info': info,
@@ -53,20 +47,10 @@ def home_page(request):
         return redirect('login')
 
 
-def sign_up_page(request):
-    if request.method == 'POST':
-        form = forms.RegisterForm(request.POST)
-    else:
-        form = forms.RegisterForm()
-
-    return render(request, 'registration/sign_up.html', {"form": form})
-
-
 def save_form_function(request):
     if request.method == 'POST':
         for key, value in request.POST.items():
             if key.startswith('work_done') and value != '':
-                print(key.split('-!SePaRaToR!-')[1])
                 test_user = User.objects.get(username=key.split('-!SePaRaToR!-')[1])
                 profile = models.Profile.objects.get(user=test_user)
                 test_work_title = models.Criteria.objects.get(title=key.split('-!SePaRaToR!-')[2])

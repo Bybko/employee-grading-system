@@ -3,7 +3,9 @@
     textarea {
         min-height: 40px;
         min-width: 300px;
-        resize: none;
+        width: 100%; /* Растягиваем на всю ширину ячейки */
+        resize: none; /* Отключаем возможность изменения размера */
+        overflow: hidden; /* Скрываем прокрутку */
     }
     summary {
         white-space: nowrap; /* Оставляем текст в одной строке */
@@ -29,15 +31,16 @@
     }
 
     th a {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
     }
 
     th a:hover {
         text-decoration: underline;
     }
     </style>
+
 </div>
 
 <div class="script">
@@ -54,9 +57,15 @@
             // Установка высоты равной контенту
             textarea.style.height = textarea.scrollHeight + 'px';
         }
+
+        // Автоматически подгоняем текстовое поле при загрузке страницы
+        window.onload = function() {
+            document.querySelectorAll('textarea').forEach(function (textarea) {
+                autoResizeTextarea(textarea);
+            });
+        };
     </script>
 </div>
-
 
 <form method="POST" action="{% url 'save-form' %}">
     {% csrf_token %}
@@ -76,7 +85,7 @@
                 <th>{{ table.used_standard.standard_in_points }}</th>
                 <th><textarea
                         name="work_done-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
-                        placeholder="{{ table.work_done }}"></textarea></th>
+                        placeholder="{{ table.work_done }}">{{ table.work_done }}</textarea></th>
                 <th><input type="number"
                            name="points-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
                            placeholder="{{ table.rating }}"></th>
@@ -102,7 +111,7 @@
                 <th>{{ table.used_standard.standard_in_points }}</th>
                 <th><textarea
                            name="work_done-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
-                           placeholder="{{ table.work_done }}"></textarea></th>
+                           placeholder="{{ table.work_done }}">{{ table.work_done }}</textarea></th>
                 <th><input type="number"
                            name="points-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
                            placeholder="{{ table.rating }}"></th>

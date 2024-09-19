@@ -85,7 +85,7 @@
                 <th>{{ table.used_standard.standard_in_points }}</th>
                 <th><textarea
                         name="work_done-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
-                        placeholder="{{ table.work_done }}">{{ table.work_done }}</textarea></th>
+                        placeholder="{{ table.work_done }}"></textarea></th>
                 <th><input type="number"
                            name="points-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
                            placeholder="{{ table.rating }}"></th>
@@ -111,7 +111,7 @@
                 <th>{{ table.used_standard.standard_in_points }}</th>
                 <th><textarea
                            name="work_done-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
-                           placeholder="{{ table.work_done }}">{{ table.work_done }}</textarea></th>
+                           placeholder="{{ table.work_done }}"></textarea></th>
                 <th><input type="number"
                            name="points-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
                            placeholder="{{ table.rating }}"></th>
@@ -135,7 +135,5 @@
         </table>
         <button type="submit">Сохранить</button>
         <br> <br> <br>
-    {% else %}
-        <h1>Ошибка. У вас не настроена роль. Обратитесь к администратору.</h1>
     {% endif %}
 </form>

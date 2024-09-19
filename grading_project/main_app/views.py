@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from . import forms, models, info_table
+from . import models, info_table
 from django.contrib.auth.models import User
 
 
@@ -30,11 +30,14 @@ def home_page(request):
             info.find_controlled_users()
 
             info.sort_all_controlled_gradings(sort_field)
-        else:
+        elif models.Profile.objects.filter(user=user_object).exists():
             info = info_table.InfoTable(user_object)
             info.user_role = 'Teacher'
 
             info.sort_all_self_gradins(sort_field)
+        else:
+            info = info_table.InfoTable(user_object)
+            info.user_role = 'None'
 
         context = {
             'info': info,

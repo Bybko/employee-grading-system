@@ -17,9 +17,14 @@
 
     {% include 'main/output.html' %}
 
-    {% else %}
+    {% elif info.user_role == 'Teacher' and info.sorted_gradings|length == 0 %}
     <br>
     <h1>На данный момент записей для Вас нет.</h1>
+    <br>
+
+    {% else %}
+    <br>
+    <h1>Ошибка. У вас не настроена роль. Обратитесь к администратору.</h1>
     <br>
     {% endif %}
 </div>

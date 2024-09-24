@@ -1,5 +1,6 @@
 from . import models
 from django.contrib.auth.models import User
+from django.db.models import Case, When, IntegerField
 
 
 class InfoTable:
@@ -40,8 +41,38 @@ class InfoTable:
         self.sorted_gradings = (models.Grading.objects.filter(user=profile).
                                                     order_by(sort_field).distinct())
 
-    def sort_all_controlled_gradings(self, sort_field: str) -> None:
+    def sort_all_controlled_gradings(self, sort_field: str, order_stage: int = 1) -> None:
         teacher_profiles = [teacher_info.user.profile for teacher_info in self.controlled_users]
+        if sort_field == 'status':
+            # Управляем приоритетами сортировки статусов в зависимости от order_stage
+            if order_stage == 1:
+                status_order = Case(
+                    When(status='approved', then=1),
+                    When(status='has_errors', then=2),
+                    When(status='not_checked', then=3),
+                    output_field=IntegerField()
+                )
+            elif order_stage == 2:
+                status_order = Case(
+                    When(status='has_errors', then=1),
+                    When(status='approved', then=2),
+                    When(status='not_checked', then=3),
+                    output_field=IntegerField()
+                )
+            else:
+                status_order = Case(
+                    When(status='not_checked', then=1),
+                    When(status='has_errors', then=2),
+                    When(status='approved', then=3),
+                    output_field=IntegerField()
+                )
 
-        self.sorted_controlled_teachers_gradings = (models.Grading.objects.filter(user__in=teacher_profiles).
-                                                    order_by(sort_field).distinct())
+            self.sorted_controlled_teachers_gradings = (
+                models.Grading.objects.filter(user__in=teacher_profiles)
+                .annotate(status_order=status_order)
+                .order_by('status_order')
+            )
+        else:
+            self.sorted_controlled_teachers_gradings = (models.Grading.objects.
+                                                        filter(user__in=teacher_profiles).
+                                                        order_by(sort_field).distinct())

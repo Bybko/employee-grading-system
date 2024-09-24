@@ -9,6 +9,10 @@ def home_page(request):
 
         sort_by = request.GET.get('sort_by', 'used_standard__title')  # 'used_standard__title' will be default sort
         order = request.GET.get('order', 'asc')
+        order_stage = int(request.GET.get('order_stage', 1))
+
+        if order_stage > 2:
+            order_stage = 0
 
         sort_field = {
             'name': 'used_standard__title',
@@ -29,7 +33,7 @@ def home_page(request):
             info.set_controlled_faculties()
             info.find_controlled_users()
 
-            info.sort_all_controlled_gradings(sort_field)
+            info.sort_all_controlled_gradings(sort_field, order_stage)
         elif models.Profile.objects.filter(user=user_object).exists():
             info = info_table.InfoTable(user_object)
             info.user_role = 'Teacher'
@@ -42,7 +46,8 @@ def home_page(request):
         context = {
             'info': info,
             'status_choices': models.Grading.STATUS_CHOICES,
-            'current_order': 'asc' if order == 'desc' else 'desc'  # Change the order for the next click
+            'current_order': 'asc' if order == 'desc' else 'desc',  # Change the order for the next click
+            'current_stage': order_stage
         }
 
         return render(request, 'main/home.html', context)

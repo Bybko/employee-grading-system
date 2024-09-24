@@ -42,7 +42,7 @@ class Inspectors(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, verbose_name='Юзер', on_delete=models.CASCADE)
     teaching_cathedras = models.ManyToManyField(Cathedras, verbose_name='Кафедры', blank=True)
-    ratings = models.PositiveIntegerField(verbose_name='Рейтинг', default=0)
+    ratings = models.FloatField(verbose_name='Рейтинг', default=0.0)
 
     class Meta:
         verbose_name = 'Работники'
@@ -94,7 +94,7 @@ class Grading(models.Model):
     user = models.ForeignKey(Profile, verbose_name='Юзер', on_delete=models.CASCADE)
     used_standard = models.ForeignKey(Criteria, verbose_name='Наименование работ', on_delete=models.PROTECT)
     work_done = models.CharField(verbose_name='Выполненная работа', max_length=400, blank=True)
-    rating = models.PositiveIntegerField(verbose_name='Баллы', default=0)
+    rating = models.FloatField(verbose_name='Баллы', default=0.0)
     status = models.CharField(
         verbose_name='Статус',
         max_length=20,

@@ -88,7 +88,8 @@
                         placeholder="{{ table.work_done }}"></textarea></th>
                 <th><input type="number"
                            name="points-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
-                           placeholder="{{ table.rating }}"></th>
+                           placeholder="{{ table.rating }}"
+                           step="0.01"></th>
                 <th>{{ table.get_status_display }}</th>
             </tr>
             {% endfor %}
@@ -103,7 +104,8 @@
                 <th><a href="?sort_by=points&order={{ current_order }}">Баллы</a></th>
                 <th><a href="?sort_by=responsible&order={{ current_order }}">Ответственный за ввод данных</a></th>
                 <th><a href="?sort_by=faculty&order={{ current_order }}">Факультет</a></th>
-                <th><a href="?sort_by=status&order={{ current_order }}">Статус</a></th>
+                <th><a href="?sort_by=status&order_stage={{ current_stage|add:1 }}">Статус</a></th>
+
             </tr>
         {% for table in info.sorted_controlled_teachers_gradings %}
             <tr>
@@ -114,7 +116,8 @@
                            placeholder="{{ table.work_done }}"></textarea></th>
                 <th><input type="number"
                            name="points-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
-                           placeholder="{{ table.rating }}"></th>
+                           placeholder="{{ table.rating }}"
+                           step="0.01"></th>
                 <th>{{ table.user.user.first_name }}  {{ table.user.user.last_name }}</th>
                 <th>{% for teacher in info.controlled_users %}
                         {% if teacher.user.profile == table.user %}

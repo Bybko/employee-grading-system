@@ -38,7 +38,7 @@ def home_page(request):
             info = info_table.InfoTable(user_object)
             info.user_role = 'Teacher'
 
-            info.sort_all_self_gradins(sort_field)
+            info.sort_all_self_gradins(sort_field, order_stage)
         else:
             info = info_table.InfoTable(user_object)
             info.user_role = 'None'

@@ -69,16 +69,22 @@
 
 <form method="POST" action="{% url 'save-form' %}">
     {% csrf_token %}
-    {% if info.user_role == 'Teacher' %}
-        <table border="3">
-            <tr>
-                <th>Наименование</th>
-                <th>Норматив</th>
-                <th>Выполненная работа</th>
-                <th>Баллы</th>
-                <th>Статус</th>
-            </tr>
+    <table border="3">
+        <tr>
+            <th><a href="?sort_by=name&order={{ current_order }}">Наименование</a></th>
+            <th><a href="?sort_by=normative&order={{ current_order }}">Норматив</a></th>
+            <th><a href="?sort_by=work_done&order={{ current_order }}">Выполненная работа</a></th>
+            <th><a href="?sort_by=points&order={{ current_order }}">Баллы</a></th>
 
+            {% if info.user_role == 'Inspector' %}
+            <th><a href="?sort_by=responsible&order={{ current_order }}">Ответственный за ввод данных</a></th>
+            <th><a href="?sort_by=faculty&order={{ current_order }}">Факультет</a></th>
+            {% endif %}
+
+            <th><a href="?sort_by=status&order_stage={{ current_stage|add:1 }}">Статус</a></th>
+        </tr>
+
+        {% if info.user_role == 'Teacher' %}
             {% for table in info.sorted_gradings %}
             <tr>
                 <th>{{ table.used_standard }}</th>
@@ -93,21 +99,8 @@
                 <th>{{ table.get_status_display }}</th>
             </tr>
             {% endfor %}
-        </table>
-        <button type="submit">Сохранить</button>
-    {% elif info.user_role == 'Inspector' %}
-        <table border="3">
-            <tr>
-                <th><a href="?sort_by=name&order={{ current_order }}">Наименование</a></th>
-                <th><a href="?sort_by=normative&order={{ current_order }}">Норматив</a></th>
-                <th><a href="?sort_by=work_done&order={{ current_order }}">Выполненная работа</a></th>
-                <th><a href="?sort_by=points&order={{ current_order }}">Баллы</a></th>
-                <th><a href="?sort_by=responsible&order={{ current_order }}">Ответственный за ввод данных</a></th>
-                <th><a href="?sort_by=faculty&order={{ current_order }}">Факультет</a></th>
-                <th><a href="?sort_by=status&order_stage={{ current_stage|add:1 }}">Статус</a></th>
-
-            </tr>
-        {% for table in info.sorted_controlled_teachers_gradings %}
+        {% elif info.user_role == 'Inspector' %}
+            {% for table in info.sorted_controlled_teachers_gradings %}
             <tr>
                 <th>{{ table.used_standard }}</th>
                 <th>{{ table.used_standard.standard_in_points }}</th>
@@ -134,9 +127,9 @@
                     {% endfor %}
                 </select></th>
             </tr>
-        {% endfor %}
+            {% endfor %}
+        {% endif %}
         </table>
         <button type="submit">Сохранить</button>
         <br> <br> <br>
-    {% endif %}
 </form>

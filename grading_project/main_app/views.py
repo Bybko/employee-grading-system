@@ -22,7 +22,7 @@ def home_page(request):
             'responsible': 'user__user__username',
             'faculty': 'user__teaching_cathedras__owning_faculty__faculty',
             'status': 'status'
-        }.get(sort_by, 'used_standard__title') # If the field is not found, the default sorting is by job title
+        }.get(sort_by, 'used_standard__title')  # If the field is not found, the default sorting is by job title
 
         if order == 'desc':
             sort_field = '-' + sort_field
@@ -59,25 +59,24 @@ def save_form_function(request):
     if request.method == 'POST':
         for key, value in request.POST.items():
             if key.startswith('work_done') and value != '':
-                test_user = User.objects.get(username=key.split('-!SePaRaToR!-')[1])
-                profile = models.Profile.objects.get(user=test_user)
-                test_work_title = models.Criteria.objects.get(title=key.split('-!SePaRaToR!-')[2])
-                grading = models.Grading.objects.get(user=profile, used_standard=test_work_title)
+                grading = parse_key(key)
                 grading.work_done = value
                 grading.save()
             if key.startswith('points') and value != '':
-                test_user = User.objects.get(username=key.split('-!SePaRaToR!-')[1])
-                profile = models.Profile.objects.get(user=test_user)
-                test_work_title = models.Criteria.objects.get(title=key.split('-!SePaRaToR!-')[2])
-                grading = models.Grading.objects.get(user=profile, used_standard=test_work_title)
+                grading = parse_key(key)
                 grading.rating = value
                 grading.save()
             if key.startswith('status') and value != '':
-                test_user = User.objects.get(username=key.split('-!SePaRaToR!-')[1])
-                profile = models.Profile.objects.get(user=test_user)
-                test_work_title = models.Criteria.objects.get(title=key.split('-!SePaRaToR!-')[2])
-                grading = models.Grading.objects.get(user=profile, used_standard=test_work_title)
+                grading = parse_key(key)
                 grading.status = value
                 grading.save()
 
     return redirect('home')
+
+
+def parse_key(key) -> models.Grading:
+    test_user = User.objects.get(username=key.split('-!SePaRaToR!-')[1])
+    profile = models.Profile.objects.get(user=test_user)
+    test_work_title = models.Criteria.objects.get(title=key.split('-!SePaRaToR!-')[2])
+    grading = models.Grading.objects.get(user=profile, used_standard=test_work_title)
+    return grading

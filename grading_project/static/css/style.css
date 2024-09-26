@@ -1,0 +1,39 @@
+textarea {
+    min-height: 40px;
+    min-width: 300px;
+    width: 100%; /* Растягиваем на всю ширину ячейки */
+    resize: none; /* Отключаем возможность изменения размера */
+    overflow: hidden; /* Скрываем прокрутку */
+}
+summary {
+    white-space: nowrap; /* Оставляем текст в одной строке */
+    overflow: hidden; /* Скрываем переполнение */
+    text-overflow: ellipsis; /* Добавляем троеточие в конце длинного текста */
+    font-weight: bold; /* Можно сделать текст жирным для красоты */
+    cursor: pointer; /* Курсор меняется на указатель при наведении */
+    font-size: 20px;
+}
+table {
+    border-collapse: collapse; /* to make lines visible */
+    width: 100%;
+}
+
+th, td {
+    padding: 10px; /* cell spacing */
+    text-align: left;
+    border: 3px solid black; /* border between columns */
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+th a {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+th a:hover {
+    text-decoration: underline;
+}

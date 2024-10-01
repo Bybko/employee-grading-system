@@ -64,8 +64,17 @@
                 </select></th>
             </tr>
             {% endfor %}
-        {% endif %}
-        </table>
-        <button type="submit">Сохранить</button>
-        <br> <br> <br>
+    {% endif %}
+    </table>
+    <button type="submit">Сохранить</button>
+</form>
+
+<form method="POST" action="{% url 'approve-all' %}">
+    {% csrf_token %}
+    {% if info.user_role == 'Inspector' %}
+        {% for table in info.sorted_controlled_teachers_gradings %}
+            <input type="hidden" name="grading_ids" value="{{ table.id }}">
+        {% endfor %}
+    <button type="submit">Одобрить все</button>
+    {% endif %}
 </form>

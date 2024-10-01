@@ -80,3 +80,11 @@ def parse_key(key) -> models.Grading:
     test_work_title = models.Criteria.objects.get(title=key.split('-!SePaRaToR!-')[2])
     grading = models.Grading.objects.get(user=profile, used_standard=test_work_title)
     return grading
+
+
+def approve_all_function(request):
+    if request.method == 'POST':
+        grading_ids = request.POST.getlist('grading_ids')
+        print(grading_ids)
+        models.Grading.objects.filter(id__in=grading_ids).update(status='approved')
+    return redirect('home')

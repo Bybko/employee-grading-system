@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from . import models, info_table
+from . import models, info_table, admin
 from django.contrib.auth.models import User
 
 
@@ -85,6 +85,13 @@ def parse_key(key) -> models.Grading:
 def approve_all_function(request):
     if request.method == 'POST':
         grading_ids = request.POST.getlist('grading_ids')
-        print(grading_ids)
         models.Grading.objects.filter(id__in=grading_ids).update(status='approved')
     return redirect('home')
+
+
+def get_excel_function(request):
+    if request.method == 'POST':
+        profiles_ids = request.POST.getlist('profiles_ids')
+        profiles = models.Profile.objects.filter(id__in=profiles_ids)
+        admin.export_selected_profiles(request, profiles)
+    return admin.export_selected_profiles(request, profiles)

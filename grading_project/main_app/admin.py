@@ -53,53 +53,6 @@ class ProfileAdmin(admin.ModelAdmin):
             'grading_records': grading_records,
         })
 
-    def export_selected_profiles(self, request, queryset):
-        workbook = Workbook()
-        sheet = workbook.active
-        sheet.title = 'User Reports'
-
-        # Заполняем заголовки столбцов
-        headers = ['ФИО', 'Наименование работ', 'Норматив в баллах', 'Выполненная работа', 'Баллы']
-        sheet.append(headers)
-
-        # Собираем данные и заполняем строки
-        data = []
-        for profile in queryset:
-            # Фильтрация записей по статусу 'approved'
-            grading_records = Grading.objects.filter(user=profile, status='approved')
-            for grading in grading_records:
-                row = [
-                    profile.user.get_full_name(),
-                    grading.used_standard.title,
-                    grading.used_standard.standard_in_points,
-                    grading.work_done,
-                    grading.rating
-                ]
-                data.append(row)
-                sheet.append(row)
-
-        # Устанавливаем ширину колонок
-        for col_num, col_name in enumerate(headers, 1):
-            column_letter = get_column_letter(col_num)
-            max_length = max(
-                len(str(cell)) for cell in [col_name] + [row[col_num-1] for row in data]
-            )
-            adjusted_width = (max_length + 2)
-            sheet.column_dimensions[column_letter].width = adjusted_width
-
-        # Создаем ответ с MIME-типом Excel
-        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = 'attachment; filename=selected_profiles_report.xlsx'
-
-        # Сохраняем рабочий лист в ответе
-        workbook.save(response)
-
-        return response
-
-    export_selected_profiles.short_description = "Экспорт выбранных профилей в Excel"
-
-    actions = [export_selected_profiles]
-
 
 class CriteriaAdmin(admin.ModelAdmin):
     list_display = ['title', 'standard_in_points', 'table_name']
@@ -163,3 +116,52 @@ admin.site.register(Table, TableAdmin)
 admin.site.register(Faculties, FacultiesAdmin)
 admin.site.register(Cathedras, CathedrasAdmin)
 admin.site.register(Inspectors, InspectorsAdmin)
+
+
+def export_selected_profiles(request, queryset):
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = 'User Reports'
+
+    # Заполняем заголовки столбцов
+    headers = ['ФИО', 'Наименование работ', 'Норматив в баллах', 'Выполненная работа', 'Баллы']
+    sheet.append(headers)
+
+    # Собираем данные и заполняем строки
+    data = []
+    for profile in queryset:
+        # Фильтрация записей по статусу 'approved'
+        grading_records = Grading.objects.filter(user=profile, status='approved')
+        for grading in grading_records:
+            row = [
+                profile.user.get_full_name(),
+                grading.used_standard.title,
+                grading.used_standard.standard_in_points,
+                grading.work_done,
+                grading.rating
+            ]
+            data.append(row)
+            sheet.append(row)
+
+    # Устанавливаем ширину колонок
+    for col_num, col_name in enumerate(headers, 1):
+        column_letter = get_column_letter(col_num)
+        max_length = max(
+            len(str(cell)) for cell in [col_name] + [row[col_num - 1] for row in data]
+        )
+        adjusted_width = (max_length + 2)
+        sheet.column_dimensions[column_letter].width = adjusted_width
+
+    # Создаем ответ с MIME-типом Excel
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=selected_profiles_report.xlsx'
+
+    # Сохраняем рабочий лист в ответе
+    workbook.save(response)
+
+    return response
+
+
+export_selected_profiles.short_description = "Экспорт выбранных профилей в Excel"
+
+actions = [export_selected_profiles]

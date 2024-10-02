@@ -78,3 +78,13 @@
     <button type="submit">Одобрить все</button>
     {% endif %}
 </form>
+
+<form method="POST" action="{% url 'get-excel' %}">
+    {% csrf_token %}
+    {% if info.user_role == 'Inspector' %}
+        {% for table in info.sorted_controlled_teachers_gradings %}
+            <input type="hidden" name="profiles_ids" value="{{ table.id }}">
+        {% endfor %}
+    <button type="submit">Вывод Excel</button>
+    {% endif %}
+</form>

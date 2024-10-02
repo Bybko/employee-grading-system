@@ -72,6 +72,11 @@ class GradingAdmin(admin.ModelAdmin):
     list_filter = ['status']
     list_editable = ['status']
 
+    class Media:
+        css = {
+            'all': ('css/custom_admin.css',)  # Подключаем кастомные стили
+        }
+
     def criteria_title(self, obj):
         return obj.used_standard.title
 

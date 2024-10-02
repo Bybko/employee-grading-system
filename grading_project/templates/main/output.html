@@ -27,10 +27,11 @@
                 <th>{{ table.used_standard.standard_in_points }}</th>
                 <th><textarea
                         name="work_done-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
-                        placeholder="{{ table.work_done }}"></textarea></th>
+                        placeholder="{{ table.work_done }}">{{ table.work_done }}</textarea></th>
                 <th><input type="number"
                            name="points-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
                            placeholder="{{ table.rating }}"
+                           value="{{ table.rating }}"
                            step="0.01"></th>
                 <th>{{ table.get_status_display }}</th>
             </tr>
@@ -42,10 +43,11 @@
                 <th>{{ table.used_standard.standard_in_points }}</th>
                 <th><textarea
                            name="work_done-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
-                           placeholder="{{ table.work_done }}"></textarea></th>
+                           placeholder="{{ table.work_done }}">{{ table.work_done }}</textarea></th>
                 <th><input type="number"
                            name="points-!SePaRaToR!-{{ table.user.user.username }}-!SePaRaToR!-{{ table.used_standard }}"
                            placeholder="{{ table.rating }}"
+                           value="{{ table.rating }}"
                            step="0.01"></th>
                 <th>{{ table.user.user.first_name }}  {{ table.user.user.last_name }}</th>
                 <th>{% for teacher in info.controlled_users %}

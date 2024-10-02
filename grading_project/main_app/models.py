@@ -93,7 +93,7 @@ class Grading(models.Model):
     ]
     user = models.ForeignKey(Profile, verbose_name='Юзер', on_delete=models.CASCADE)
     used_standard = models.ForeignKey(Criteria, verbose_name='Наименование работ', on_delete=models.PROTECT)
-    work_done = models.CharField(verbose_name='Выполненная работа', max_length=400, blank=True)
+    work_done = models.TextField(verbose_name='Выполненная работа', blank=True)
     rating = models.FloatField(verbose_name='Баллы', default=0.0)
     status = models.CharField(
         verbose_name='Статус',
